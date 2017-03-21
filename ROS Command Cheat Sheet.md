@@ -10,7 +10,8 @@ All commands learned from book "A gentle Intro to ROS" will be put here
 * Create a subdirectory “src” to contain source file 
 * Create a package by command:
 ```
-catkin_create_pkg package-name
+catkin_create_pkg package-name [depend1] [depend2] [depend3]...
+(catkin_create_pkg first_Package std_msgs roscpp)
 ```
 to generate two configuration file, mainfest file: **package.xml** and **CMakelists.txt** for Cmake
 * Create souce file .cpp in the same dir to package.xml (or build a subdirctory)
@@ -153,8 +154,13 @@ add element for new dependency
 ```
 
 ---
-## Quick recall for showing node,topic and message
+## Quick recall for showing package,node,topic and message
 In order to learn more about data being transmitted in ROS
+### rsopack
+```
+rospack dependl <package_name>
+```
+
 ### rosnode
 Display informateion about ROS Nodes
 ```
