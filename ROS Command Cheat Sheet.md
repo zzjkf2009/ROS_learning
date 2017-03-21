@@ -23,7 +23,7 @@ There is an example of a "hello_world.cpp"
 #include <ros / ros.h>
 int main( int argc , char ∗∗ argv ) {
 // Initilize the ROS system. Call this once at the begining of the program
-// the last param is the defualt name of the mode name
+// the last param is the defualt name of the mode name, the  string can't have space between them.
 ros::init ( argc , argv , " hello_ros ") ;
 
 // Establish this program as a ROS node .
@@ -101,9 +101,11 @@ ros::NodeHandle node_handle;
 ros::Publisher pub = node_handle.advertise<message_type>(
 topic_name, queue_size);
 ```
-message type: 
+* message type: 
 should be same as header defined at begining, like geometry_msgs:Twist
-message queue size:
+* topic_name
+"turtle1/cmd_vel", have to use the quote makrs and the topic name has to be same tpoic name  as subsbriber
+* message queue size:
 in msot cases, a reasonable large number
 ### Creating and filling the messgae object
 create messge by 
@@ -149,3 +151,58 @@ add element for new dependency
 <>build_depend>geometry_msgs</build_depend>
 <run_depend>geometry_msgs</run_depend>
 ```
+
+---
+## Quick recall for showing node,topic and message
+In order to learn more about data being transmitted in ROS
+### rosnode
+Display informateion about ROS Nodes
+```
+rosndoe info <node_name>
+rosnode kill <node_name> , kill -a; kill --all
+rosnode list
+```
+### rostopic 
+Display information about ROS topic
+```
+rostopic bw <topic_name>// bandwith
+rostopic delay <topic_name>
+rostopic echo <topic_name>
+rodtopic find <msg_type>
+rostopic hz <topic_name>
+rostopic info <topic_name>
+rostopic list
+rostopic type // display message type of a topic
+```
+### rosmsg
+Display the fileds in ROS message type
+```
+rosmsg show <message_type>
+rosmsg list
+rosmsg package <package_name>
+```
+
+---
+## Subscurbing message
+
+### Writing  a callback function 
+```
+void function_name(const package_name::type_name &msg) {
+                     foo();
+}
+```
+### Creating a subscriber object
+```
+ros::NodeHandle node_handle;
+ros::Sbuscriber sub=node_handle.subscribe(topic_name,queue_szie,pointer_to_call_back_function_name);
+```
+**pointer_to_call_back_function_name** here is **&function_name** where funcion name is the name of the callback function introduced above. 
+### Giving ROS control
+To execute call back function , we have to use
+```
+ros::spin();
+ros::spinOnce();
+```
+ros::spinOnce is usually written inside a loop, and if dont have repetitive work, use ros::spin()
+
+---
