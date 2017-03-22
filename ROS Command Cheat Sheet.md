@@ -212,3 +212,24 @@ ros::spinOnce();
 ros::spinOnce is usually written inside a loop, and if dont have repetitive work, use ros::spin()
 
 ---
+
+
+## Google stytle C++
+
+### code analysis using cpplint
+Lint tools are a form of static code analysis (like cppcheck). Google's cpplint tool is a python script that identifies potential source code issues that are in conflict with the Google C++ style guide. This tool can be run before a version control commit, after you've written a new class, or following refactoring. Any issue found by cpplint will have a confidence score, 1-5, with 5 most certain. Note: cpp-boilerplate has a few errors right now.
+
+ install and run from terminal:
+    wget https://raw.githubusercontent.com/google/styleguide/gh-pages/cpplint/cpplint.py (Links to an external site.)
+    Change permission to executable: chmod +x cpplint.py
+    cd <repository>
+    Run cpplint
+
+Example run with cpp-boilerplate (cpplint.py is in the parent directory):
+
+cd cpp-boilerplate
+../cpplint.py --extensions=h,hpp,cpp $( find . -name *.h -or -name *.hpp -or -name *.cpp | grep -vE -e "^./build/" -e "^./vendor/" )
+
+This command runs cpplint.py and tells the script to examine files with extension .h, .hpp, or .cpp. The script expects a list of files so the bash command first finds all files in the directory and sub-directories that have the extension .h, .hpp, or .cpp. It then excludes any file found in the build or vendor sub-directories.
+
+---
