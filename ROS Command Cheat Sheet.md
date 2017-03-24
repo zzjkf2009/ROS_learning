@@ -235,6 +235,14 @@ This command runs cpplint.py and tells the script to examine files with extensio
 ---
 ## ROS launch
 
-roslaunch is just to run myltiple nodes together at once rather than using rosrun multiple times
+roslaunch is just to run myltiple nodes together at once rather than using rosrun multiple times. It is a XML document written in a .launch file. The tempalte of .launch file is like: 
 
+```
+<launch>
+  <node
+    pkg="package_name"
+    type="execute_name"
+    name="node_name"
+  />
+</launch>
 ```
