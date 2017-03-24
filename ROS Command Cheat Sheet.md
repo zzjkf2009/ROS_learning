@@ -233,3 +233,8 @@ cd cpp-boilerplate
 This command runs cpplint.py and tells the script to examine files with extension .h, .hpp, or .cpp. The script expects a list of files so the bash command first finds all files in the directory and sub-directories that have the extension .h, .hpp, or .cpp. It then excludes any file found in the build or vendor sub-directories.
 
 ---
+## ROS launch
+
+roslaunch is just to run myltiple nodes together at once rather than using rosrun multiple times
+
+```
