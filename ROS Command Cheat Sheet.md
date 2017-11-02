@@ -156,6 +156,8 @@ add element for new dependency
 ---
 ## Quick recall for showing package,node,topic and message
 In order to learn more about data being transmitted in ROS
+* using -h to help for checking what comment can be used, such as 
+rospack -h
 ### rsopack
 ```
 rospack dependl <package_name>
@@ -187,7 +189,77 @@ rosmsg show <message_type>
 rosmsg list
 rosmsg package <package_name>
 ```
+### rqt_graph
+rqt_graph creates a dynamic graph of what's going on in the system
+```
+rosrun rqt_graph rqt_graph
+```
+rqt_plot displays a scrolling time plot of the data published on topics.
+```
+ rosrun rqt_plot rqt_plot
+ ```
+### rosed
+rosed will let us drectly edit the files in package without access the path by path
+Usage:
+```
+rosed [package_name] [filename]
+rosed [package_name] [Tab][Tab]
+```
+Specify editor, the default editor is Vim, it could be change by
+```
+export EDITOR='atom -w'
+```
+---
+## Creating msg and srv file
+Details see: http://wiki.ros.org/ROS/Tutorials/CreatingMsgAndSrv
+```
+rosmsg -h
+rossrv -h
+```
+### Create own message type
+Create a msg folder, and cd to this folder, create .msg file like:
+```
+string first_name
+string last_name
+uint8 age
+uint32 score
+```
+To make turn msg file into source code. 
+In *package.xml*, add
+```
+<build_depend>message_generation</build_depend>
+<exec_depend>message_runtime</exec_depend>
+```
+In *CMakeLists.txt*,add
+```
+find_package ( ...
+std_msgs
+message_generation
+...)
 
+catkin_package ( ...
+CATKIN_DEPENDS message_runtime
+...)
+
+add_message_files(
+  FILES
+  Num.msg
+)
+
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+)
+```
+
+### Create srv file
+Same as msg, in *CMakeLists.txt*, add additional service dependencies
+```
+add_service_files(
+  FILES
+  AddTwoInts.srv
+)
+```
 ---
 ## Subscurbing message
 
@@ -212,7 +284,81 @@ ros::spinOnce();
 ros::spinOnce is usually written inside a loop, and if dont have repetitive work, use ros::spin()
 
 ---
+## Create Launch file
+roslaunch is just to run myltiple nodes together at once rather than using rosrun multiple times. It is a XML document written in a .launch file. The tempalte of .launch file is like: 
+More details can be find in the book**Introduction to ROS** Chapter 6
+Basic Syntax:
+```
+<launch> ...</launch>
+```
+### Adding nodes, **Note** *type* here is the executable name in Cmakefile *add_executable*; *name* here will overwrite the name
+in source file ros::init; *respawn* will reopen the node if it(or all nodes)is/are terninated. On the contrast, *required* is true means when the node is terminated, all other nodes will close; *launch-prefix="xterm -e"* all open a new terminal for this node
+```
+<node 
+pkg="package_name" 
+type="executable_name" 
+name="node_name" 
+respawn="true"
+required="true"
+launch-prefix="xterm -e"
+\>
+```
+### Remapping names
+Remap a name (could be topic name) to another name. A example for this is, let say if a node subscribe a topic "topic1" and we do something about the values of this topic and make it as a new "topic2"(same message type), so we can rename the "topic1" in this node to "topic2" so that the node will subscribe the modified message value.
 
+Remap name in command line
+```
+rosrun turtlesim turtlesim_node turtle1/pose:=anglepose
+```
+Or in .launch file
+```
+<node 
+ pkg="..." type="..." name="...">
+ <remap from="turtle1/pose" to="anglepose" />
+ </node>
+ ```
+### Add other launch files
+```
+<include file="$(find package_name)/launch_file_name"/>
+
+<inlcude file="$(find turtlebot_gazebo)/turtlebot_world.launch">
+<arg name="world_file" value="$(find turtlebot_gazebo)/worlds/corridor.world" />
+</include>
+```
+### Declarign arguments
+*"default"* can be override in command line. Hoever, *"value"* can't be changed, so if arg is set value="...", it can't modified in command line
+```
+<arg name="arg_name" default="0" />
+<arg name="OpenOrClose" value "1" />
+```
+when launch the launch file, use code below only if when the arg is set default or no assigned value
+```
+roslaunch pkg_name launch_file_name arg_name:=arg_vale
+```
+This arg vale can be used in source and launch file by 
+```
+$(arg arg_name)
+```
+
+### Creating groups
+*group* element is a convenient way to origanize nodes in large launch files, it can be defined as:
+```
+<group ns="namespace_name"/>
+...
+...
+</group>
+```
+Or add conditions
+```
+<group if ="0 or 1" /> 
+...
+</group>
+
+<group if=$(arg arg_name) />
+...
+</group>
+```
+---
 
 ## Google stytle C++
 
@@ -233,16 +379,4 @@ cd cpp-boilerplate
 This command runs cpplint.py and tells the script to examine files with extension .h, .hpp, or .cpp. The script expects a list of files so the bash command first finds all files in the directory and sub-directories that have the extension .h, .hpp, or .cpp. It then excludes any file found in the build or vendor sub-directories.
 
 ---
-## ROS launch
 
-roslaunch is just to run myltiple nodes together at once rather than using rosrun multiple times. It is a XML document written in a .launch file. The tempalte of .launch file is like: 
-
-```
-<launch>
-  <node
-    pkg="package_name"
-    type="execute_name"
-    name="node_name"
-  />
-</launch>
-```
