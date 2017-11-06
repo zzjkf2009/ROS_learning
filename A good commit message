@@ -1,0 +1,7 @@
+
+## Tips
+* Write the summary line and description of what you have done in the imperative mode, that is as if you were commanding someone. Start the line with "Fix", "Add", "Change" instead of "Fixed", "Added", "Changed".
+* Always leave the second line blank.
+* Line break the commit message (to make the commit message readable without having to scroll horizontally in gitk).
+
+##
